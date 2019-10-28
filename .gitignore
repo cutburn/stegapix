@@ -1,6 +1,9 @@
-# Ignore image files
+# image files
 *.jpg
 *.png
 
-# Ignore bytecode
+# bytecode
 __pycache__
+
+# config file containing sensitive data
+settings.ini
