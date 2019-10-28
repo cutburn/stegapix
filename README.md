@@ -19,9 +19,9 @@ For more on steganography and a brief description of LSB steganography, which I 
 1. Install the necessary software for your system from the "Requirements" section.
 2. Download/clone this repository.
 3. Set up the conda environment with the command:  
-`conda create --name <env> --file <this file>`
+  `conda create --name <env> --file <this file>`
 4. Install the requisite pip packages with:  
-`pip install -r requirements.txt`
+  `pip install -r requirements.txt`
 5. In the root directory of your repo, create a file called `settings.ini`. It should be filled out as below, substituting your own API authentication information where indicated:  
   ```ini
   [GENERAL]
@@ -44,3 +44,9 @@ For more on steganography and a brief description of LSB steganography, which I 
   Client_Secret = YOUR_CLIENT_SECRET_HERE
   ```
 6. That's it!
+
+## Usage
+1. Activate your conda environment with  
+  `source activate <env>` (or `activate <env>` on Windows)
+2. Post an image to your configured Twitter account by invoking  
+  `./main.py`
