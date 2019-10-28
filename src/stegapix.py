@@ -31,7 +31,7 @@ def post_new_steganographic_image():
     connection = env_utils.make_db_connection()
     with connection:
         cursor = connection.cursor()
-        env_utils.init_stegapix_table(cursor)
+        env_utils.init_stegapix_tables(cursor)
         message_image_object = get_next_message_image(cursor)
         message_file_name = download_message_image(message_image_object)
         if message_file_name is not None:
@@ -81,7 +81,7 @@ def get_next_image(cursor, search_term):
     but we are being idealistic.
 
     """
-    image_generator = generate_candidate_image_object(search_term)
+    image_generator = generate_candidate_image_object(search_term, cursor)
     next_image = next(image_generator)
     response = requests.get(next_image["link"])
     while (env_utils.is_image_in_db(cursor, next_image["link"]) or
@@ -92,9 +92,15 @@ def get_next_image(cursor, search_term):
     return next_image
 
 
-def generate_candidate_image_object(image_term):
+def generate_candidate_image_object(image_term, cursor):
     """Generate candidate image, possibly one we've seen already."""
-    search_index = 1
+    check_start_index = env_utils.check_start_from_last_visited()
+    if check_start_index is not None:
+        search_index = env_utils.get_last_visited_index(cursor, image_term)
+        if search_index is None:
+            search_index = 1
+    else:
+        search_index = 1
     while True:
         json_index = str(search_index)
         json_result = google_search.get_json_results(image_term,
@@ -106,6 +112,7 @@ def generate_candidate_image_object(image_term):
             image_object_digest["width"] = image_object["image"]["width"]
             yield image_object_digest
         search_index += 1
+        env_utils.set_last_visited_index(cursor, image_term, search_index)
 
 
 def extract_search_items(json_data):
