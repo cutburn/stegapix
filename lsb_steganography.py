@@ -32,12 +32,13 @@ def steganographize(veil_image_path, message_image_path):
     Args:
         veil_image_path (str): location of veiling image
         message_image_path (str): location of message image
-
+    Returns:
+        Filename of the steganographized file.
     """
     veil = Image.open(veil_image_path)
-    veil_data = veil.getdata()
+    veil_data = veil.getdata().convert("RGB")
     message = Image.open(message_image_path)
-    message_data = message.getdata()
+    message_data = message.getdata().convert("RGB")
     steg = Image.new(veil.mode, veil.size, 'white')
     steg_data = []
 
@@ -45,7 +46,9 @@ def steganographize(veil_image_path, message_image_path):
         steg_data.append(encode_tuple(veil_data[i], message_data[i]))
 
     steg.putdata(steg_data)
-    steg.save(veil_image_path[:-4] + '.steg.png')
+    steg_file_name = veil_image_path[:-4] + '.steg.png'
+    steg.save(steg_file_name)
+    return steg_file_name
 
 
 def encode_tuple(veil_pixel, message_pixel, norm_factor=NORMALIZATION_FACTOR):

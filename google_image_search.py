@@ -2,14 +2,16 @@
 
 """This module will encapsulate the stuff we need to do in order to
 grab a few of the top Google image search results for a search
-term. For those who want to replicate at home, this requires a few
+term.
+
+For those who want to replicate at home, this requires a few
 things like a Google Custom Search API key (which at time of writing
 this comment is free for anyone with a Google account) and a Custom
 Search Engine (see https://cse.google.com/cse/all). Once you've got an
 API key and a custom search cx ID, you need only plug them into a
 file called `settings.ini` like so:
 
-[DEFAULT]
+[GOOGLE]
 API_key = YOUR_KEY_HERE
 cx_ID = YOUR_ID_HERE
 
@@ -17,21 +19,11 @@ And you should be in business!
 
 """
 
-import configparser
 import json
 
 import requests
 
-
-def get_ini_setting(setting):
-    """Get a named setting from the DEFAULT section of settings.ini."""
-    try:
-        config_parser = configparser.ConfigParser()
-        config_parser.read("settings.ini")
-        return config_parser.get("DEFAULT", setting)
-    except configparser.NoOptionError:
-        print("ERROR: Could not parse settings.ini file")
-        exit(1)
+import ini_util
 
 
 def encode_search_term(search_term):
@@ -44,9 +36,10 @@ def build_query_string(search_term, start_index):
     query_dict = {}
     query_dict["q"] = encode_search_term(search_term)
     query_dict["start"] = start_index
-    query_dict["key"] = get_ini_setting("API_key")
-    query_dict["cx"] = get_ini_setting("cx_ID")
+    query_dict["key"] = ini_util.get_ini_setting("GOOGLE", "API_Key")
+    query_dict["cx"] = ini_util.get_ini_setting("GOOGLE", "cx_ID")
     query_dict["searchType"] = "image"
+    query_dict["imgSize"] = "large"
     return "&".join([k + "=" + v for k, v in query_dict.items()])
 
 

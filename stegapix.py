@@ -1,13 +1,25 @@
 #!/usr/bin/env python
 
+"""This module leverages the functionality of the standalone
+lsb_steganography module with a Google Custom Search Engine API
+crawler to post steganographized images of "snow", with hidden images
+of "snow the rapper" - usually Darrin Kenneth O'Brien, the man made
+famous in the 90s by the song "Informer", but as I learned from the
+search results there's also an artist by the name of"Snow tha Product"
+that comes up a lot instead.
+
+"""
+
 from io import BytesIO
+import os
 
 from PIL import Image
 import requests
 import sqlite3
 
 import google_image_search as google_search
-import lsb_steganography
+import lsb_steganography as lsb_steg
+import image_posting
 
 message_image_term = "snow the rapper"
 veil_image_term = "snow"
@@ -16,8 +28,8 @@ local_message_image_name = "LOCAL_STEG"
 
 def init_stegapix_table(cursor):
     """Initialize the steganography table in the db if it isn't already."""
-    cursor.execute(
-        "CREATE TABLE IF NOT EXISTS Stegapix(Id INTEGER PRIMARY KEY, URL TEXT);")
+    steg_table_spec = "Stegapix(Id INTEGER PRIMARY KEY, URL TEXT)"
+    cursor.execute("CREATE TABLE IF NOT EXISTS {0};".format(steg_table_spec))
 
 
 def is_image_in_db(cursor, image_url):
@@ -35,10 +47,10 @@ def extract_search_items(json_data):
 def generate_candidate_image_object(image_term):
     """Generate candidate image, possibly one we've seen already."""
     search_index = 1
-    # while search_index < 3:
     while True:
+        json_index = str(search_index)
         json_result = google_search.get_json_results(image_term,
-                                                     start_index=str(search_index))
+                                                     start_index=json_index)
         for image_object in extract_search_items(json_result):
             image_object_digest = {}
             image_object_digest["link"] = image_object["link"]
@@ -59,32 +71,46 @@ def get_next_image(cursor, search_term):
     """
     image_generator = generate_candidate_image_object(search_term)
     next_image = next(image_generator)
-    while is_image_in_db(cursor, next_image["link"]):
+    response = requests.get(next_image["link"])
+    while (is_image_in_db(cursor, next_image["link"]) or
+           response.status_code != requests.codes.ok or not
+           is_valid_image(response)):
         next_image = next(image_generator)
+        response = requests.get(next_image["link"])
     return next_image
 
+
 def get_next_message_image(cursor):
+    """Get next message image."""
     return get_next_image(cursor, message_image_term)
 
 
 def get_next_veil_image(cursor, message_image):
+    """Get next veil image."""
     return get_next_image(cursor, veil_image_term)
 
 
 def get_response_mime_type(response):
     """Get GET response MIME type."""
-    return response.headers["Content-Type"].split("/")
+    mime_type = response.headers["Content-Type"].split("/")
+    if ';' in mime_type[1]:
+        mime_type[1] = mime_type[1].split(";")[0]
+    return mime_type
 
 
 def is_valid_image(response):
     """Validate request (make sure it has an image Content-Type)"""
-    return get_response_mime_type(response)[0] == "image"
+    mime_type = get_response_mime_type(response)
+    return mime_type[0] == "image" and mime_type[1] != "gif"
+
 
 def download_message_image(image_url):
+    """Download message image."""
     return download_image(image_url, "MESSAGE_IMAGE")
 
 
 def download_veil_image(image_url, message_image_object):
+    """Download veil image and make it match size of the message image."""
     dimensions = (message_image_object["width"],
                   message_image_object["height"])
     return download_image(image_url, "VEIL_IMAGE", dimensions=dimensions)
@@ -93,14 +119,16 @@ def download_veil_image(image_url, message_image_object):
 def download_image(image_url, file_name, dimensions=None):
     """Download image at argument URL, return the filename if successful."""
     response = requests.get(image_url)
-    if response.status_code == requests.codes.ok and is_valid_image(response):
-        extension = get_response_mime_type(response)[1]
-        file_name = file_name + "." + extension
-        image = Image.open(BytesIO(response.content))
-        if dimensions is not None:
-            image = image.resize(dimensions, Image.ANTIALIAS)
-        image.save(file_name)
-        return file_name
+    # Note: at this point no need to check on status code or image
+    # being valid, as long as not much has changed since when we last
+    # checked it a few milliseconds ago
+    extension = get_response_mime_type(response)[1]
+    file_name = file_name + "." + extension
+    image = Image.open(BytesIO(response.content))
+    if dimensions is not None:
+        image = image.resize(dimensions, Image.ANTIALIAS)
+    image.save(file_name)
+    return file_name
 
 
 def add_image_to_db(cursor, image_url):
@@ -116,18 +144,22 @@ def grab_new_image():
         init_stegapix_table(cursor)
         message_image_object = get_next_message_image(cursor)
         message_image_url = message_image_object["link"]
-        message_image_file_name = download_message_image(message_image_url)
-        if message_image_file_name is not None:
+        message_file_name = download_message_image(message_image_url)
+        if message_file_name is not None:
             veil_image_object = get_next_veil_image(cursor,
                                                     message_image_object)
             veil_image_url = veil_image_object["link"]
-            veil_image_file_name = download_veil_image(veil_image_url,
-                                                       message_image_object)
+            veil_file_name = download_veil_image(veil_image_url,
+                                                 message_image_object)
             
-            lsb_steganography.steganographize(veil_image_file_name,
-                                              message_image_file_name)
+            steg_file_name = lsb_steg.steganographize(veil_file_name,
+                                                      message_file_name)
             add_image_to_db(cursor, message_image_url)
             add_image_to_db(cursor, veil_image_url)
+            image_posting.post_image(steg_file_name)
+            os.remove(message_file_name)
+            os.remove(veil_file_name)
+            os.remove(steg_file_name)
 
 
 def main():
