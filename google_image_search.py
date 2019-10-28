@@ -53,7 +53,8 @@ def build_query_string(search_term, start_index):
 def build_url(search_term, start_index):
     """Build and return a Google image search URL."""
     base_url = "https://www.googleapis.com/customsearch/v1"
-    return base_url + "?" + build_query_string(search_term, start_index)
+    return base_url + "?" + build_query_string(search_term,
+                                               start_index)
 
 
 def get_json_results(search_term, start_index="1"):
