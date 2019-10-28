@@ -29,6 +29,12 @@ from imgurpython import ImgurClient
 import environment_utils as env_utils
 
 
+def post_image(image_file_name):
+    """Post an image to Twitter via Imgur."""
+    image_id = post_to_imgur(image_file_name)
+    post_to_twitter(image_id)
+
+
 def post_to_imgur(image_file_name):
     """Post and image to Imgur."""
     client_id = env_utils.get_ini_setting("IMGUR", "Client_ID")
@@ -51,9 +57,3 @@ def post_to_twitter(imgur_id):
     request = api.request("statuses/update", {"status":
                                               "http://imgur.com/" + imgur_id})
     print(request.status_code)
-
-
-def post_image(image_file_name):
-    """Post an image to Twitter via Imgur."""
-    image_id = post_to_imgur(image_file_name)
-    post_to_twitter(image_id)

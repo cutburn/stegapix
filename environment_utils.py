@@ -23,6 +23,7 @@ def get_ini_setting(section, setting):
 
 
 def make_db_connection():
+    """Make connection to stegapix SQLite3 database."""
     return sqlite3.connect("stegapix.db")
 
 
