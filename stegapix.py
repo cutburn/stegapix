@@ -92,10 +92,14 @@ def get_next_veil_image(cursor, message_image):
 
 def get_response_mime_type(response):
     """Get GET response MIME type."""
-    mime_type = response.headers["Content-Type"].split("/")
-    if ';' in mime_type[1]:
-        mime_type[1] = mime_type[1].split(";")[0]
-    return mime_type
+    content_type = response.headers.get("Content-Type", None)
+    if content_type is None:
+        return ["", ""]
+    else:
+        mime_type = content_type.split("/")
+        if ';' in mime_type[1]:
+            mime_type[1] = mime_type[1].split(";")[0]
+        return mime_type
 
 
 def is_valid_image(response):
