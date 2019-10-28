@@ -21,8 +21,10 @@ from . import google_image_search as google_search
 from . import lsb_steganography as lsb_steg
 from . import image_posting
 
-message_image_term = "snow the rapper"
-veil_image_term = "snow"
+
+message_image_term = env_utils.get_ini_setting("GENERAL",
+                                               "message_search_term")
+veil_image_term = env_utils.get_ini_setting("GENERAL", "veil_search_term")
 local_message_image_name = "LOCAL_STEG"
 
 
