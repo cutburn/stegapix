@@ -97,9 +97,9 @@ def get_ini_setting(section, setting, required=True):
         config_parser = configparser.ConfigParser()
         config_parser.read("settings.ini")
         return config_parser.get(section, setting)
-    except configparser.NoOptionError:
+    except (configparser.NoSectionError, configparser.NoOptionError) as e:
         if required:
-            print("ERROR: Could not parse settings.ini file")
+            print("settings.ini error: " + str(e))
             exit(1)
         else:
             return None
