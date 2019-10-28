@@ -11,16 +11,18 @@ import configparser
 import sqlite3
 
 
-def get_ini_setting(section, setting):
+def get_ini_setting(section, setting, required=True):
     """Get a named setting from the specified section of settings.ini."""
     try:
         config_parser = configparser.ConfigParser()
         config_parser.read("settings.ini")
         return config_parser.get(section, setting)
     except configparser.NoOptionError:
-        print("ERROR: Could not parse settings.ini file")
-        exit(1)
-
+        if required:
+            print("ERROR: Could not parse settings.ini file")
+            exit(1)
+        else:
+            return None
 
 def make_db_connection():
     """Make connection to stegapix SQLite3 database."""
