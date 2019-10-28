@@ -4,6 +4,9 @@ A project for posting steganographic puns to Twitter, in Python.
 ## Requirements
 * [conda](http://conda.pydata.org/docs/download.html)
 * Python 2.7+/3.5+: Only required for Miniconda installs on Linux, OSX, and possibly Windows - see installation details in above link
+* A Google Custom Search API key and cx ID (See https://cse.google.com/cse/all) and Custom Search Engine with image search enabled
+* A Twitter API key, API secret, access token key and access token secret
+* An Imgur client ID and client secret
 
 ## Setup
 1. Install the necessary software for your system from the "Requirements" section.
