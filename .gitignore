@@ -3,7 +3,7 @@
 *.png
 
 # bytecode
-__pycache__
+*.pyc
 
 # config file containing sensitive data
 settings.ini
