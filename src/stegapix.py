@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 
 """This module leverages the functionality of the standalone
-lsb_steganography module with a Google Custom Search Engine API
-crawler to post steganographized images of "snow", with hidden images
-of "snow the rapper" - usually Darrin Kenneth O'Brien, the man made
-famous in the 90s by the song "Informer", but as I learned from the
-search results there's also an artist by the name of"Snow tha Product"
-that comes up a lot instead.
+lsb_steganography module with a Google Custom Search Engine crawler to
+post steganographized images of a "message" image, hidden in the least
+significant bits of the image file, and obscured by a "veil" image.
 
 """
 
