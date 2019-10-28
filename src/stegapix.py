@@ -16,10 +16,10 @@ import os
 from PIL import Image
 import requests
 
-import environment_utils as env_utils
-import google_image_search as google_search
-import lsb_steganography as lsb_steg
-import image_posting
+from . import environment_utils as env_utils
+from . import google_image_search as google_search
+from . import lsb_steganography as lsb_steg
+from . import image_posting
 
 message_image_term = "snow the rapper"
 veil_image_term = "snow"

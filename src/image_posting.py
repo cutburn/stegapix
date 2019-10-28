@@ -26,7 +26,7 @@ And you should be in business!
 from TwitterAPI import TwitterAPI
 from imgurpython import ImgurClient
 
-import environment_utils as env_utils
+from . import environment_utils as env_utils
 
 
 def post_image(image_file_name):

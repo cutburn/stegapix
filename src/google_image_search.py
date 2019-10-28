@@ -23,7 +23,7 @@ import json
 
 import requests
 
-import environment_utils as env_utils
+from . import environment_utils as env_utils
 
 
 def get_json_results(search_term, start_index="1"):
