@@ -21,6 +21,7 @@ A project for posting steganographic puns to Twitter, in Python.
   [GOOGLE]
   API_Key = YOUR_API_KEY_HERE
   cx_ID = YOUR_CX_ID_HERE
+  skip_traversed_result_indices = 1 # Optional flag; if you wish to start from search index 1 with every invocation you can omit this line
   
   [TWITTER]
   API_Key = YOUR_API_KEY_HERE
