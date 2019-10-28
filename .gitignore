@@ -7,3 +7,6 @@ __pycache__
 
 # config file containing sensitive data
 settings.ini
+
+# SQLite 3 db for images
+stegapix.db
