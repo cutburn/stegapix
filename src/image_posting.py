@@ -3,24 +3,6 @@
 """This module encapsulates posting an image file to Imgur and
 subsequently tweeting that image to twitter.
 
-For those who want to replicate at home, this requires a few Twitter
-API auth pieces, as well as an Imgur account client ID and secret (see
-below - a little googling should tell you how these can be
-obtained). Once you've got them you need only plug them into a file
-called `settings.ini` like so:
-
-[TWITTER]
-API_Key = YOUR_API_KEY_HERE
-API_Secret = YOUR_API_SECRET_HERE
-Access_Token_Key = YOUR_ACCESS_TOKEN_HERE
-Access_Token_Secret = YOUR_ACCESS_TOKEN_SECRET_HERE
-
-[IMGUR]
-Client_ID = YOUR_CLIENT_ID_HERE
-Client_Secret = YOUR_CLIENT_SECRET_HERE
-
-And you should be in business!
-
 """
 
 from TwitterAPI import TwitterAPI
