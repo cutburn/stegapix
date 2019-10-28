@@ -1,0 +1,9 @@
+autopep8==1.2.4
+future==0.16.0
+imgurpython==1.1.7
+oauthlib==2.0.1
+pep8==1.7.0
+Pillow==3.4.2
+requests==2.12.4
+requests-oauthlib==0.7.0
+TwitterAPI==2.4.3
