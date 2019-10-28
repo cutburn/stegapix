@@ -13,7 +13,7 @@ A project for posting steganographic puns to Twitter, in Python.
 4. Install the requisite pip packages with:  
 `pip install -r requirements.txt`
 5. In the root directory of your repo, create a file called `settings.ini`. It should be filled out as below, substituting your own API authentication information where indicated:  
-  ```
+  ```ini
   [GOOGLE]
   API_Key = YOUR_API_KEY_HERE
   cx_ID = YOUR_CX_ID_HERE
