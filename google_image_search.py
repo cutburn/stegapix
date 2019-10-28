@@ -23,7 +23,7 @@ import json
 
 import requests
 
-import ini_util
+import environment_utils as env_utils
 
 
 def encode_search_term(search_term):
@@ -36,8 +36,8 @@ def build_query_string(search_term, start_index):
     query_dict = {}
     query_dict["q"] = encode_search_term(search_term)
     query_dict["start"] = start_index
-    query_dict["key"] = ini_util.get_ini_setting("GOOGLE", "API_Key")
-    query_dict["cx"] = ini_util.get_ini_setting("GOOGLE", "cx_ID")
+    query_dict["key"] = env_utils.get_ini_setting("GOOGLE", "API_Key")
+    query_dict["cx"] = env_utils.get_ini_setting("GOOGLE", "cx_ID")
     query_dict["searchType"] = "image"
     query_dict["imgSize"] = "large"
     return "&".join([k + "=" + v for k, v in query_dict.items()])

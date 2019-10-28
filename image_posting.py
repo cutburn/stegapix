@@ -26,13 +26,13 @@ And you should be in business!
 from TwitterAPI import TwitterAPI
 from imgurpython import ImgurClient
 
-import ini_util
+import environment_utils as env_utils
 
 
 def post_to_imgur(image_file_name):
     """Post and image to Imgur."""
-    client_id = ini_util.get_ini_setting("IMGUR", "Client_ID")
-    client_secret = ini_util.get_ini_setting("IMGUR", "Client_Secret")
+    client_id = env_utils.get_ini_setting("IMGUR", "Client_ID")
+    client_secret = env_utils.get_ini_setting("IMGUR", "Client_Secret")
     client = ImgurClient(client_id, client_secret)
     items = client.upload_from_path(image_file_name, anon=False)
     return items['id']
@@ -40,11 +40,11 @@ def post_to_imgur(image_file_name):
 
 def post_to_twitter(imgur_id):
     """Tweet an Imgur image with a given ID to Twitter, with a preview."""
-    CONSUMER_KEY = ini_util.get_ini_setting("TWITTER", "API_Key")
-    CONSUMER_SECRET = ini_util.get_ini_setting("TWITTER", "API_Secret")
-    ACCESS_TOKEN_KEY = ini_util.get_ini_setting("TWITTER", "Access_Token_Key")
-    ACCESS_TOKEN_SECRET = ini_util.get_ini_setting("TWITTER",
-                                                   "Access_Token_Secret")
+    CONSUMER_KEY = env_utils.get_ini_setting("TWITTER", "API_Key")
+    CONSUMER_SECRET = env_utils.get_ini_setting("TWITTER", "API_Secret")
+    ACCESS_TOKEN_KEY = env_utils.get_ini_setting("TWITTER", "Access_Token_Key")
+    ACCESS_TOKEN_SECRET = env_utils.get_ini_setting("TWITTER",
+                                                    "Access_Token_Secret")
 
     api = TwitterAPI(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY,
                      ACCESS_TOKEN_SECRET)
